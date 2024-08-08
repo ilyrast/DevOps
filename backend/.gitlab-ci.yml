@@ -10,7 +10,6 @@ stages:
   - test
   - release
 
-
 build-code:
   stage: build
   image: golang:1.17
@@ -37,8 +36,6 @@ build-backend-docker:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - mv momo-store-${VERSION}/api backend/
-    - mkdir -p /kaniko/.docker
     - /kaniko/executor
       --context ${CI_PROJECT_DIR}/backend
       --dockerfile ${CI_PROJECT_DIR}/backend/Dockerfile
