@@ -1,5 +1,5 @@
-include:
-  - template: Security/SAST.gitlab-ci.yml
+#include:
+#  - template: Security/SAST.gitlab-ci.yml
 
 variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
@@ -7,7 +7,7 @@ variables:
 stages:
   - build
   - build_image
-#  - test
+  - test
   - release
 
 build-code:
@@ -45,19 +45,19 @@ build-backend-docker:
       --cache=true
       --cache-copy-layers
 
-#unit-test:
-#  stage: test
-#  image: golang:1.17
-#  variables:
-#    GOPATH: $CI_PROJECT_DIR/backend/.go
-#    GIT_DEPTH: "0"
-#  script:
-#    - cd backend
-#    - go test -v ./... 
-#  cache:
-#    key: $CI_COMMIT_REF_SLUG
-#    paths:
-#      - backend/.go/pkg/mod/
+unit-test:
+  stage: test
+  image: golang:1.17
+  variables:
+    GOPATH: $CI_PROJECT_DIR/backend/.go
+    GIT_DEPTH: "0"
+  script:
+    - cd backend
+    - go test -v ./... 
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - backend/.go/pkg/mod/
 
 #gosec-sast:
 #  stage: test
