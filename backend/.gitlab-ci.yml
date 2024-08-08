@@ -100,7 +100,7 @@ upload-backend-nexus:
     entrypoint: [ "" ]
   cache: [ ]
   before_script:
-    - crane auth login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} http://nexus.praktikum-services.tech:8081
+    - crane auth login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} nexus.praktikum-services.tech:8081
   script:
     - crane tag ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION} http://nexus.praktikum-services.tech/repository/momo-back-027-04/momo-backend:${VERSION}
     - crane push http://nexus.praktikum-services.tech/repository/momo-back-027-04/momo-backend:latest
