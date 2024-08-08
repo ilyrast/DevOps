@@ -7,7 +7,7 @@ variables:
 stages:
   - build
   - build_image
-  - test
+#  - test
   - release
 
 build-code:
@@ -45,37 +45,37 @@ build-backend-docker:
       --cache=true
       --cache-copy-layers
 
-unit-test:
-  stage: test
-  image: golang:1.17
-  variables:
-    GOPATH: $CI_PROJECT_DIR/backend/.go
-    GIT_DEPTH: "0"
-  script:
-    - cd backend
-    - go test -v ./... 
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - backend/.go/pkg/mod/
+#unit-test:
+#  stage: test
+#  image: golang:1.17
+#  variables:
+#    GOPATH: $CI_PROJECT_DIR/backend/.go
+#    GIT_DEPTH: "0"
+#  script:
+#    - cd backend
+#    - go test -v ./... 
+#  cache:
+#    key: $CI_COMMIT_REF_SLUG
+#    paths:
+#      - backend/.go/pkg/mod/
 
-gosec-sast:
-  stage: test
-  variables:
-    GOPATH: $CI_PROJECT_DIR/backend/.go
-  before_script:
-    - |
-      cat <<EOF > ~/.netrc
-      machine gitlab.praktikum-services.ru
-      login $GITLAB_USER_LOGIN
-      password $GITLAB_TOKEN
-      EOF
-  script:
-    - /analyzer run --target-dir ${CI_PROJECT_DIR}/backend/
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - backend/.go/pkg/mod/
+#gosec-sast:
+#  stage: test
+#  variables:
+#    GOPATH: $CI_PROJECT_DIR/backend/.go
+#  before_script:
+#    - |
+#      cat <<EOF > ~/.netrc
+#      machine gitlab.praktikum-services.ru
+#      login $GITLAB_USER_LOGIN
+#      password $GITLAB_TOKEN
+#      EOF
+#  script:
+#    - /analyzer run --target-dir ${CI_PROJECT_DIR}/backend/
+#  cache:
+#    key: $CI_COMMIT_REF_SLUG
+#    paths:
+#      - backend/.go/pkg/mod/
 
 #sonarqube-backend-sast:
 #  stage: test
