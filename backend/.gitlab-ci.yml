@@ -9,6 +9,8 @@ stages:
   - build_image
   - test
   - release
+  - deploy-dev
+#  - deplot-prod
 
 build-code:
   stage: build
@@ -91,16 +93,34 @@ unit-test:
 #    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} -Dsonar.projectKey=${BACKEND_KEY}
 #  allow_failure: true
 
-upload-backend-nexus:
+upload-backend:
   stage: release
   variables:
     GIT_STRATEGY: none
-  image: docker:20.10.12-dind-rootless
+  image: 
+    name: gcr.io/go-containerregistry/crane:debug
+    entrypoint: [ "" ]
   before_script:
-    - until docker info; do sleep 1; done
-#    - docker login nexus.praktikum-services.tech:8081 -u "${NEXUS_USER}" -p "${NEXUS_PASS}"
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker pull ${CI_REGISTRY_IMAGE}/momo-backend:${CI_COMMIT_SHA}
-    - docker tag ${CI_REGISTRY_IMAGE}/momo-backend:${CI_COMMIT_SHA} $CI_REGISTRY_IMAGE/momo-backend:latest
-    - docker push -u "${NEXUS_USER}" -p "${NEXUS_PASS}" http://nexus.praktikum-services.tech/repository/momo-back-027-04/momo-backend:latest
+    - crane tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA $VERSION
+
+deploy-backend:
+  needs:
+    - upload-backend
+  stage: deploy-dev
+  image: docker:24.0.7-alpine3.19
+  environment:
+    name: production/backend
+  before_script:
+    - apk add docker-cli-compose openssh-client bash
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 600 ~/.ssh
+    - ssh-keyscan -t rsa  ${DEV_HOST} >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - docker context create remote --description "remote ssh" --docker "host=ssh://${DEV_USER}@${DEV_HOST}"
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker --context remote compose --env-file up -d backend --pull "always" --force-recreate
