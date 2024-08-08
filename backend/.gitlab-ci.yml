@@ -64,6 +64,7 @@ unit-test:
       - backend/.go/pkg/mod/
 
 gosec-sast:
+  stage: test
   variables:
     GOPATH: $CI_PROJECT_DIR/backend/.go
   before_script:
