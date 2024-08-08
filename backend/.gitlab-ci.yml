@@ -97,7 +97,7 @@ upload-backend-nexus:
     GIT_STRATEGY: none
   image: docker:20.10.12-dind-rootless
   before_script:
-    - docker login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} nexus.praktikum-services.tech:8081
+    - echo "${NEXUS_PASSWORD}" | docker login -u "${NEXUS_USER}" --password-stdin nexus.praktikum-services.tech:8081
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker pull ${CI_REGISTRY_IMAGE}/momo-backend:${CI_COMMIT_SHA}
