@@ -1,0 +1,108 @@
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+variables:
+  VERSION: 1.0.${CI_PIPELINE_ID}
+
+stages:
+  - build
+  - build_image
+  - test
+  - release
+
+
+build-code:
+  stage: build
+  image: golang:1.17
+  variables:
+    GOPATH: $CI_PROJECT_DIR/backend/.go
+  before_script:
+    - mkdir -p backend/.go
+  script:
+    - cd backend/cmd/api/
+    - go build .
+    - mkdir -p $CI_PROJECT_DIR/momo-store-${VERSION}
+    - mv api $CI_PROJECT_DIR/momo-store-${VERSION}/
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - backend/.go/pkg/mod/
+  artifacts:
+    paths:
+      - momo-store-${VERSION}/api
+
+build-backend-docker:
+  stage: build_image
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mv momo-store-${VERSION}/api backend/
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context ${CI_PROJECT_DIR}/backend
+      --dockerfile ${CI_PROJECT_DIR}/backend/Dockerfile
+      --destination ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION}
+      --build-arg VERSION=${VERSION}
+      --cache=true
+      --cache-copy-layers
+
+unit-test:
+  stage: test
+  image: golang:1.17
+  variables:
+    GOPATH: $CI_PROJECT_DIR/backend/.go
+    GIT_DEPTH: "0"
+  script:
+    - cd backend
+    - go test -v ./... 
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - backend/.go/pkg/mod/
+
+gosec-sast:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/backend/.go
+  before_script:
+    - |
+      cat <<EOF > ~/.netrc
+      machine gitlab.praktikum-services.ru
+      login $GITLAB_USER_LOGIN
+      password $GITLAB_TOKEN
+      EOF
+  script:
+    - /analyzer run --target-dir ${CI_PROJECT_DIR}/backend/
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - backend/.go/pkg/mod/
+
+#sonarqube-backend-sast:
+#  stage: test
+#  image: sonarsource/sonar-scanner-cli:latest
+#  variables:
+#    GIT_DEPTH: "0"
+#  cache:
+#    key: "${CI_JOB_NAME}"
+#    paths:
+#      - .sonar/cache
+#  script:
+#    - cd backend
+#    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} -Dsonar.projectKey=${BACKEND_KEY}
+#  allow_failure: true
+
+upload-backend-latest:
+  variables:
+    GIT_STRATEGY: none
+  image: docker:20.10.12-dind-rootless
+  stage: release
+  before_script:
+    - until docker info; do sleep 1; done
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker pull $CI_REGISTRY_IMAGE/momo-backend:$VERSION
+    - docker tag $CI_REGISTRY_IMAGE/momo-backend:$VERSION $CI_REGISTRY_IMAGE/momo-backend:latest
+    - docker push $CI_REGISTRY_IMAGE/momo-backend:latest
