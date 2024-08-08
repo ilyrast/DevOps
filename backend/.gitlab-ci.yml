@@ -39,9 +39,7 @@ build-backend-docker:
   script:
     - mv momo-store-${VERSION}/api backend/
     - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
+    - /kaniko/executor
       --context ${CI_PROJECT_DIR}/backend
       --dockerfile ${CI_PROJECT_DIR}/backend/Dockerfile
       --destination ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION}
@@ -107,4 +105,4 @@ upload-backend-latest:
   before_script:
     - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - crane tag $CI_REGISTRY_IMAGE/momo-backend:$VERSION
+    - crane tag $CI_REGISTRY_IMAGE/momo-backend:$CI_COMMIT_SHA $VERSION
