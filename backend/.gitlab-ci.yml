@@ -103,7 +103,5 @@ upload-backend-nexus:
     - crane auth login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} nexus.praktikum-services.tech:8081
     - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-#    - crane tag ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION} latest
-    - echo ${VERSION}
-    - crane ls ${CI_REGISTRY_IMAGE}/ 
+    - crane tag ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION} ${VERSION}
     - crane push ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION} http://nexus.praktikum-services.tech/repository/momo-back-027-04/momo-backend:latest
