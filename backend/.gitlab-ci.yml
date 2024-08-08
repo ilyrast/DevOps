@@ -91,7 +91,7 @@ gosec-sast:
 #    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN} -Dsonar.projectKey=${BACKEND_KEY}
 #  allow_failure: true
 
-upload-backend-latest:
+upload-backend-nexus:
   stage: release
   variables:
     GIT_STRATEGY: none
@@ -100,8 +100,7 @@ upload-backend-latest:
     entrypoint: [ "" ]
   cache: [ ]
   before_script:
-    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - crane auth login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} http://nexus.praktikum-services.tech/repository/momo-back-027-04/
   script:
-    - crane ls ${CI_REGISTRY_IMAGE}/momo-backend
-    - crane ls $CI_REGISTRY_IMAGE/momo-backend
-    - crane tag $CI_REGISTRY_IMAGE/momo-backend:$CI_COMMIT_SHA $VERSION
+    - crane tag ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION} http://nexus.praktikum-services.tech/repository/momo-back-027-04/momo-backend:${VERSION}
+    - crane push http://nexus.praktikum-services.tech/repository/momo-back-027-04/momo-backend:latest
