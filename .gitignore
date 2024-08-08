@@ -17,5 +17,7 @@ vendor/
 .vscode/
 .DS_Store
 
-# TF Secrets 
+# Terraform
 infrastructure/terraform/secrets.tfvars
+infrastructure/terraform/.terraform/*
+infrastructure/terrafrom/.terraform.lock.hcl
