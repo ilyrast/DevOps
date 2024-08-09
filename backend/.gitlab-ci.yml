@@ -6,7 +6,7 @@ variables:
 
 stages:
   - build
-  - build_image
+  - build_docker
   - test
   - release
   - deploy-dev
@@ -33,7 +33,7 @@ build-code:
       - momo-store-${VERSION}/api
 
 build-backend-docker:
-  stage: build_image
+  stage: build_docker
   image:
     name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
