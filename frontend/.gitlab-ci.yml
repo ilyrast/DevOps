@@ -5,48 +5,44 @@ variables:
   JAVA_OPTS: -XX:MaxRAMPercentage=90
 
 stages:
-  - build-code
-  - build-docker
+#  - build-code
+#  - build-docker
   - test
-  - release
+#  - release
 #  - deploy
 
-build-frontend-code:
-  stage: build-code
-  script:
-    - cd frontend
-    - npm install
-    - npm run build
-    - mkdir -p ../momo-store-${VERSION} 
-    - mv dist ../momo-store-${VERSION}/public_html
-  artifacts:
-    paths:
-      - momo-store-${VERSION}/public_html
+#build-frontend-code:
+#  stage: build-code
+#  script:
+#    - cd frontend
+#    - npm install
+#    - npm run build
+#    - mkdir -p ../momo-store-${VERSION} 
+#    - mv dist ../momo-store-${VERSION}/public_html
+#  artifacts:
+#    paths:
+#      - momo-store-${VERSION}/public_html
 
-build-frontend-docker:
-  stage: build-docker
-  image:
-    name: gcr.io/kaniko-project/executor:v1.9.0-debug
-    entrypoint: [""]
-  script:
-    - echo "test"
-    - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}"
-      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}/momo-frontend:$CI_COMMIT_SHA"
-      --build-arg VERSION=$VERSION
-      --cache=true
+#build-frontend-docker:
+#  stage: build-docker
+#  image:
+#    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+#    entrypoint: [""]
+#  script:
+#    - echo "test"
+#    - /kaniko/executor
+#      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}"
+#      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
+#      --destination "${CI_REGISTRY_IMAGE}/momo-frontend:$CI_COMMIT_SHA"
+#      --build-arg VERSION=$VERSION
+#      --cache=true
 
 sonarqube-frontend-sast:
   stage: test
   script:
     - cd frontend
     - npm install -g sonarqube-scanner
-    - >
-      sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND}
-      -Dsonar.sources=.
-      -Dsonar.host.url=${SONARQUBE_URL}
-      -Dsonar.login=${SONAR_LOGIN_FRONT}
+    - sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND} -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_LOGIN_FRONT}
 
 gitlab-sast:
   stage: test
@@ -54,17 +50,17 @@ gitlab-sast:
     include:
       - template: Security/SAST.gitlab-ci.yml 
 
-release-front:
-  needs:
-    - build-frontend-docker
-  variables:
-    GIT_STRATEGY: none
-  image:
-    name: gcr.io/go-containerregistry/crane:debug
-    entrypoint: [ "" ]
-  cache: [ ]
-  stage: release
-  before_script:
-    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - crane tag $CI_REGISTRY_IMAGE/momo-frontend:$CI_COMMIT_SHA $VERSION
+#release-front:
+#  needs:
+#    - build-frontend-docker
+#  variables:
+#    GIT_STRATEGY: none
+#  image:
+#    name: gcr.io/go-containerregistry/crane:debug
+#    entrypoint: [ "" ]
+#  cache: [ ]
+#  stage: release
+#  before_script:
+#    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#  script:
+#    - crane tag $CI_REGISTRY_IMAGE/momo-frontend:$CI_COMMIT_SHA $VERSION
