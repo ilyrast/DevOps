@@ -5,20 +5,21 @@ variables:
   JAVA_OPTS: -XX:MaxRAMPercentage=90
 
 stages:
-  - build
+  - build-code
+  - build-docker
   - test
   - release
 #  - deploy
 
 build-frontend-code:
-  stage: build
+  stage: build-code
   script:
     - cd frontend
     - npm install
     - npm run build
 
 build-frontend-docker:
-  stage: build
+  stage: build-docker
   image:
     name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
