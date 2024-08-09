@@ -133,7 +133,7 @@ deploy-backend-k8s:
     - mkdir -p ~/.kube
     - echo "$kubeconfig" | base64 -d > ~/.kube/config
   script:
-    - cd infrastructure/momo-store-helm
-    - helm upgrade --dependency-update --install --atomic -n momo-store momo-store . --set backend.image.tag=$VERSION --reuse-values
+    - cd infrastructure/helm
+    - helm upgrade momo-store ./
     - rm ~/.kube/config
   when: manual
