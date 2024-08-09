@@ -44,6 +44,9 @@ sonarqube-frontend-sast:
 
 gitlab-sast:
   stage: test
+  trigger:
+    include:
+      - template: Security/SAST.gitlab-ci.yml 
 
 release-front:
   needs:
