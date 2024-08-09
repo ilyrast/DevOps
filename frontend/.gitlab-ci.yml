@@ -48,7 +48,7 @@ sonarqube-frontend-sast:
       - .sonar/cache
   script:
     - cd frontend
-    - sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND} -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_LOGIN_FRONT}
+    - sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND} -Dsonar.sources=. -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN_FRONT}
   allow_failure: true
 
 
