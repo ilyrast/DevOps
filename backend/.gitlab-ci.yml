@@ -135,6 +135,6 @@ deploy-backend-k8s:
     - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
   script:
     - cd infrastructure/helm
-    - helm upgrade --install --atomic momo-store ./
+    - helm upgrade --debug --install --atomic momo-store ./
     - rm ~/.kube/config
   when: manual
