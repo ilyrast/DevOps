@@ -133,7 +133,6 @@ deploy-backend-k8s:
     - mkdir -p ~/.kube
     - touch ~/.kube/config
     - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
-    - kubectl config current-context
   script:
     - cd infrastructure/helm
     - helm upgrade --debug --install --atomic momo-store ./
