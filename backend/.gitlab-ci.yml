@@ -1,6 +1,4 @@
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
+---
 variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
 
@@ -10,15 +8,6 @@ stages:
   - release
   - deploy-dev
   - deploy-prod
-
-deploy-dev:
-  extends: .plan
-  stage: deploy-dev
-
-deploy-prod:
-  extends: .plan
-  stage: deploy-prod
-
 
 build-code:
   stage: build
