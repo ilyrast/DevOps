@@ -11,6 +11,15 @@ stages:
   - deploy-dev
   - deploy-prod
 
+deploy-dev:
+  extends: .plan
+  stage: deploy-dev
+
+deploy-prod:
+  extends: .plan
+  stage: deploy-prod
+
+
 build-code:
   stage: build
   image: golang:1.17
