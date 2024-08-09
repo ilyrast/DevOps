@@ -1,0 +1,24 @@
+---
+backend: 
+  replicas: 3
+  image:
+    repository: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-backend:1.0.1438485
+    pullPolicy: IfNotPresent
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 20%
+  revisionHistoryLimit: 12
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 30
+    timeoutSeconds: 2
+    failureThreshold: 6
+  imagePullSecrets:
+    name: docker-config-secret
+  service:
+    type: ClusterIP
+    port: 8081
+    targetPort: 8081
+  secrets:
+    dockerConfigSecret: ewogICAgImF1dGhzIjogewogICAgICAgICJnaXRsYWIucHJha3Rpa3VtLXNlcnZpY2VzLnJ1OjUwNTAiOiB7CiAgICAgICAgICAgICJhdXRoIjogIlltRmphMTlyT0hNNlkwY3RhRmhtUjNCdGVIVlJOVGwxYVZjemMwWT0iCiAgICAgICAgfQogICAgfQp9
