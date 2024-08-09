@@ -5,37 +5,37 @@ variables:
   JAVA_OPTS: -XX:MaxRAMPercentage=90
 
 stages:
-#  - build-code
-#  - build-docker
+  - build-code
+  - build-docker
   - test
-#  - release
-#  - deploy
+  - release
+  - deploy
 
-#build-frontend-code:
-#  stage: build-code
-#  script:
-#    - cd frontend
-#    - npm install
-#    - npm run build
-#    - mkdir -p ../momo-store-${VERSION} 
-#    - mv dist ../momo-store-${VERSION}/public_html
-#  artifacts:
-#    paths:
-#      - momo-store-${VERSION}/public_html
+build-frontend-code:
+  stage: build-code
+  script:
+    - cd frontend
+    - npm install
+    - npm run build
+    - mkdir -p ../momo-store-${VERSION} 
+    - mv dist ../momo-store-${VERSION}/public_html
+  artifacts:
+    paths:
+      - momo-store-${VERSION}/public_html
 
-#build-frontend-docker:
-#  stage: build-docker
-#  image:
-#    name: gcr.io/kaniko-project/executor:v1.9.0-debug
-#    entrypoint: [""]
-#  script:
-#    - echo "test"
-#    - /kaniko/executor
-#      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}"
-#      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
-#      --destination "${CI_REGISTRY_IMAGE}/momo-frontend:$CI_COMMIT_SHA"
-#      --build-arg VERSION=$VERSION
-#      --cache=true
+build-frontend-docker:
+  stage: build-docker
+  image:
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    entrypoint: [""]
+  script:
+    - echo "test"
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}"
+      --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/momo-frontend:$CI_COMMIT_SHA"
+      --build-arg VERSION=$VERSION
+      --cache=true
 
 sonarqube-frontend-sast:
   stage: test
@@ -58,17 +58,39 @@ gitlab-sast:
     include:
       - template: Security/SAST.gitlab-ci.yml 
 
-#release-front:
-#  needs:
-#    - build-frontend-docker
-#  variables:
-#    GIT_STRATEGY: none
-#  image:
-#    name: gcr.io/go-containerregistry/crane:debug
-#    entrypoint: [ "" ]
-#  cache: [ ]
-#  stage: release
-#  before_script:
-#    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#  script:
-#    - crane tag $CI_REGISTRY_IMAGE/momo-frontend:$CI_COMMIT_SHA $VERSION
+release-front:
+  needs:
+    - build-frontend-docker
+  variables:
+    GIT_STRATEGY: none
+  image:
+    name: gcr.io/go-containerregistry/crane:debug
+    entrypoint: [ "" ]
+  cache: [ ]
+  stage: release
+  before_script:
+    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - crane tag $CI_REGISTRY_IMAGE/momo-frontend:$CI_COMMIT_SHA $VERSION
+
+deploy-frontend-dev:
+  needs:
+    - release-front
+  stage: deploy
+  image: docker:24.0.7-alpine3.19
+  environment:
+    name: production/frontend
+  before_script:
+    - apk add docker-cli-compose openssh-client bash
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 600 ~/.ssh
+    - ssh-keyscan -t rsa  ${DEV_HOST} >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - docker context create remote --description "remote ssh" --docker "host=ssh://${DEV_USER}@${DEV_HOST}"
+  script:
+    - scp ./frontend/nginx.conf ${DEV_USER}@${DEV_HOST}:.
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker --context remote compose up frontend -d --pull "always" --force-recreate
+
