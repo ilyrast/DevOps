@@ -90,7 +90,7 @@ deploy-frontend-dev:
     - chmod 644 ~/.ssh/known_hosts
     - docker context create remote --description "remote ssh" --docker "host=ssh://${DEV_USER}@${DEV_HOST}"
   script:
-    - scp ./frontend/nginx.conf ${DEV_USER}@${DEV_HOST}:.
+    - scp ./frontend/nginx.conf ${DEV_USER}@${DEV_HOST}:/home/deploy/nginx.conf
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker --context remote compose up frontend -d --pull "always" --force-recreate
 
