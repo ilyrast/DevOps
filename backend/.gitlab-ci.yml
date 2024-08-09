@@ -8,8 +8,8 @@ stages:
   - build
   - test
   - release
-  - deploy-dev
-  - deploy-prod
+  - 'deploy-dev'
+  - 'deploy-prod'
 
 build-code:
   stage: build
