@@ -38,9 +38,8 @@ build-backend-docker:
     name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
   script:
-    - mv momo-store-${VERSION}/api backend/
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/backend"
+      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}"
       --dockerfile "${CI_PROJECT_DIR}/backend/Dockerfile"
       --destination "${CI_REGISTRY_IMAGE}/momo-backend:$CI_COMMIT_SHA"
       --build-arg VERSION=${VERSION}
@@ -127,7 +126,7 @@ deploy-backend-host:
 
 deploy-backend-k8s:
   needs:
-    - upload-backend
+    - deploy-backend-host
   stage: deploy-prod
   image: alpine/helm:3.9.3
   before_script:
