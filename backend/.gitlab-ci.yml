@@ -127,7 +127,7 @@ deploy-backend-host:
 
 deploy-backend-k8s:
   needs:
-    - deploy-backend
+    - upload-backend
   stage: deploy-prod
   image: alpine/helm:3.9.3
   before_script:
