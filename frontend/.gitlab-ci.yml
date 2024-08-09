@@ -31,9 +31,9 @@ build-frontend-docker:
   script:
     - echo "test"
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/frontend"
+      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}"
       --dockerfile "${CI_PROJECT_DIR}/frontend/Dockerfile"
-      --destination "${CI_REGISTRY_IMAGE}/momo-frontend:$VERSION"
+      --destination "${CI_REGISTRY_IMAGE}/momo-frontend:$CI_COMMIT_SHA"
       --build-arg VERSION=$VERSION
       --cache=true
 
