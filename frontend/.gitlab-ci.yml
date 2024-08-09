@@ -1,4 +1,4 @@
----
+\---
 variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
   MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
@@ -51,7 +51,7 @@ gitlab-sast:
 
 release-front:
   needs:
-    - build-front-docker
+    - build-frontend-docker
   variables:
     GIT_STRATEGY: none
   image:
