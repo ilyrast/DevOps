@@ -17,6 +17,11 @@ build-frontend-code:
     - cd frontend
     - npm install
     - npm run build
+    - mkdir -p ../momo-store-${VERSION} 
+    - mv dist ../momo-store-${VERSION}/public_html
+  artifacts:
+    paths:
+      - momo-store-${VERSION}/public_html
 
 build-frontend-docker:
   stage: build-docker
