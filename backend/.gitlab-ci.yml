@@ -131,7 +131,8 @@ deploy-backend-k8s:
   image: alpine/helm:3.9.3
   before_script:
     - mkdir -p ~/.kube
-    - echo ${kubeconfig} | base64 -d > ~/.kube/config
+    - touch ~/.kube/config
+    - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
   script:
     - cd infrastructure/helm
     - helm upgrade momo-store ./
