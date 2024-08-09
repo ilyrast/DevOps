@@ -128,10 +128,8 @@ deploy-backend-k8s:
 #  needs:
 #    - deploy-backend-host
   stage: deploy-prod
-  image: alpine/helm:3.9.3
+  image: bitnami/kubectl:latest
   before_script:
-    - apk add --no-cache curl bash
-    - curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
     - mkdir -p ~/.kube
     - touch ~/.kube/config
     - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
