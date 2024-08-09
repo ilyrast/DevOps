@@ -10,7 +10,7 @@ stages:
   - test
   - release
   - deploy-dev
-  - deplot-prod
+  - deploy-prod
 
 build-code:
   stage: build
@@ -105,7 +105,7 @@ upload-backend:
   script:
     - crane tag $CI_REGISTRY_IMAGE/momo-backend:$CI_COMMIT_SHA $VERSION
 
-deploy-backend:
+deploy-backend-host:
   needs:
     - upload-backend
   stage: deploy-dev
