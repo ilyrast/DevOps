@@ -128,7 +128,7 @@ deploy-backend-k8s:
 #  needs:
 #    - deploy-backend-host
   stage: deploy-prod
-  image: bitnami/kubectl:latest
+  image: alpine/helm:3.9.3
   before_script:
     - mkdir -p ~/.kube
     - touch ~/.kube/config
