@@ -10,7 +10,7 @@ stages:
   - release
 #  - deploy
 
-build-code:
+build-frontend-code:
   stage: build
   script:
     - cd frontend
@@ -50,7 +50,7 @@ gitlab-sast:
 
 release-front:
   needs:
-    - build-front
+    - build-front-docker
   variables:
     GIT_STRATEGY: none
   image:
