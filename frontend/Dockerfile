@@ -8,6 +8,6 @@ RUN npm install \
 #release
 FROM nginxproxy/nginx-proxy:1.3.1-alpine
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
-#COPY --from=builder /usr/src/app/nginx.tmpl /app/nginx.tmpl
+COPY --from=builder /usr/src/app/nginx.tmpl /app/nginx.tmpl
 EXPOSE 80 
 
