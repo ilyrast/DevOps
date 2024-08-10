@@ -17,7 +17,9 @@ build-code:
   image: golang:latest
   script:
     - cd backend/cmd/api
-    - go build . -o app ./...
+    - ls -la
+    - go build .
+    - ls -la
     - mkdir -p $CI_PROJECT_DIR/momo-store-${VERSION}
     - mv app/api $CI_PROJECT_DIR/momo-store-${VERSION}/
   cache:
