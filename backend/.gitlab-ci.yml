@@ -38,7 +38,7 @@ build-backend-docker:
     entrypoint: [""]
   script:
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}/momo-store-${VERSION}/backend"
+      --context "${CI_PROJECT_DIR}/backend"
       --dockerfile "${CI_PROJECT_DIR}/backend/Dockerfile"
       --destination "${CI_REGISTRY_IMAGE}/momo-backend:$CI_COMMIT_SHA"
       --build-arg VERSION=${VERSION}
