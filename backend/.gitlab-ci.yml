@@ -21,7 +21,8 @@ build-code:
     - go build .
     - ls -la
     - mkdir -p $CI_PROJECT_DIR/momo-store-${VERSION}
-    - mv app/api $CI_PROJECT_DIR/momo-store-${VERSION}/
+    - mv api $CI_PROJECT_DIR/momo-store-${VERSION}/
+    - ls -la $CI_PROJECT_DIR/momo-store-${VERSION}/
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
