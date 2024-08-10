@@ -1,10 +1,10 @@
 FROM alpine/curl:3.14
 RUN pwd
-ls -la
+RUN ls -la
 WORKDIR /app
 RUN pwd
-ls -la
+RUN ls -la
 COPY ./api /app/api
-ls -la
+RUN ls -la
 ENTRYPOINT ["/app/api"]
 EXPOSE 8081
