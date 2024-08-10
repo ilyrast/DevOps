@@ -1,5 +1,5 @@
 <template>
-  <div style"text-align:center" class="h-100">
+  <div style "text-align:center" class="h-100">
 
     <div class="card d-inline-block text-start">
 
