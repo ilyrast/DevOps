@@ -15,15 +15,11 @@ stages:
 build-code:
   stage: build
   image: golang:1.17
-  variables:
-    GOPATH: $CI_PROJECT_DIR/backend/.go
-  before_script:
-    - mkdir -p backend/.go
   script:
     - cd backend/cmd/api/
-    - go build .
+    - go build . -o app ./...
     - mkdir -p $CI_PROJECT_DIR/momo-store-${VERSION}
-    - mv api $CI_PROJECT_DIR/momo-store-${VERSION}/
+    - mv app/api $CI_PROJECT_DIR/momo-store-${VERSION}/
   cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
