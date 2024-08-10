@@ -16,7 +16,7 @@ build-frontend-code:
   script:
     - cd frontend
     - npm install
-    - npm run build
+    - VUE_APP_API_URL=/ npm run build
     - mkdir -p ../momo-store-${VERSION} 
     - mv dist ../momo-store-${VERSION}/public_html
   artifacts:
