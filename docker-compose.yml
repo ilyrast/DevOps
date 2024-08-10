@@ -19,6 +19,10 @@ services:
     container_name: frontend
     ports:
       - "80:80"
+    environment:
+      DEFAULT_HOST: "backend"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
       - momo-store
     restart: always

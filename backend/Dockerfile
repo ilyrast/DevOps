@@ -1,5 +1,5 @@
 FROM alpine/curl:3.14
-COPY api /bin/api
+WORKDIR /app
+COPY ./api /app/api
+ENTRYPOINT ["/app/api"]
 EXPOSE 8081
-RUN ls -la /bin/api/
-ENTRYPOINT ["/bin/api"]
