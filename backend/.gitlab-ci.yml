@@ -35,7 +35,7 @@ build-code:
 build-backend-docker:
   stage: build_image
   image:
-    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    name: gcr.io/kaniko-project/executor:-debug
     entrypoint: [""]
   script:
     - mv momo-store-${VERSION}/api backend/
