@@ -3,7 +3,7 @@ FROM node:16 as builder
 WORKDIR /usr/src/app
 COPY . .
 RUN npm install \
-    && npm run build
+    &&VUE_APP_API_URL=/ npm run build
 
 #release
 FROM nginxproxy/nginx-proxy:1.3.1-alpine
