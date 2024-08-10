@@ -1,4 +1,3 @@
-version: "3.5"
 services:
   backend:
     image: ${CI_REGISTRY_IMAGE}/momo-backend:${VERSION}
