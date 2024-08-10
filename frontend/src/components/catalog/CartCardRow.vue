@@ -11,7 +11,7 @@
         <span v-if="!hovering" class="bg-primary quantity">{{ cartItem.quantity }}</span>
       </div>
     </li>
-  <ul>
+  </ul>
 </template>
 
 <script lang="ts">
