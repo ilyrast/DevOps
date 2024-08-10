@@ -1,10 +1,12 @@
-FROM alpine/curl:3.14
-RUN pwd
-RUN ls -la
+FROM golang:latest AS builder
 WORKDIR /app
-RUN pwd
-RUN ls -la
-COPY ./api /app/api
-RUN ls -la
-ENTRYPOINT ["/app/api"]
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o myapp .
+
+
+FROM alpine/curl:3.14
+RUN apk --no-cache add ca-certificates
+WORKDIR /app
+COPY --from=builder /app/myapp /usr/local/bin/myapp
+CMD ["myapp"]
 EXPOSE 8081
