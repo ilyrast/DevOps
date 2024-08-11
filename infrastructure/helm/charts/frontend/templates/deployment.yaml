@@ -24,11 +24,11 @@ spec:
           volumeMounts:
             - name: {{ .Values.deployment.volumeMounts.name }}
               mountPath: {{ .Values.deployment.volumeMounts.mountPath }}
-              subPath: {{ .Values.deployment.volumeMounts.subPath }}
+              subPath: {{  .Values.deployment.volumeMounts.subPath }}
       imagePullSecrets:
         - name: {{ .Values.deployment.imagePullSecrets.name }}
       volumes:
-        - name: {{ .Values.deployment.volumeMounts.name }}
+        - name: {{  .Values.deployment.volumeMounts.name }}
           configMap:
             name: {{ .Values.configMap.name }}
             items:

@@ -134,10 +134,10 @@ deploy-backend-k8s:
     - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
     - pwd
   script:
-    - 'sed -i "5s|: .*|: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-backend:${VERSION}|" infrastructure/helm/charts/backend/values.yaml'
-    - 'sed -i "24s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/backend/values.yaml'
+    - 'sed -i "3s|: .*|: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-backend:${VERSION}|" infrastructure/helm/charts/backend/values.yaml'
+    - 'sed -i "22s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/backend/values.yaml'
     - helm dependency update infrastructure/helm/charts/backend
     - cd infrastructure/helm/charts/backend
-    - helm upgrade --debug --install --atomic momo-store ./
+    - helm upgrade --debug --install --atomic momo-store ./ --values ./values.yaml
     - rm ~/.kube/config
   when: manual
