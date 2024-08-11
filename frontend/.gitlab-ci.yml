@@ -112,6 +112,7 @@ deploy-frontend-k8s:
     - 'sed -i "19s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/frontend/values.yml'
     - helm dependency update infrastructure/helm/charts/frontend
     - cd infrastructure/helm/charts/frontend
+    - cat infrastructure/helm/charts/frontend/values.yml
     - helm upgrade --debug --install --atomic momo-store ./ --values ./values.yml
     - rm ~/.kube/config
   when: manual
