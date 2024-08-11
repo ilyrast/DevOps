@@ -20,3 +20,13 @@ backend:
   only:
     changes:
       - backend/**/*
+
+ingress:
+  stage: module-pipelines
+  trigger:
+    include:
+      - "/infrastructure/.gitlab-ci.yml"
+    strategy: depend
+  only:
+    changes:
+      - infrastructure/helm/charts/ingress/**/*
