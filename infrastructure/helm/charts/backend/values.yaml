@@ -1,4 +1,3 @@
----
 backend: 
   replicas: 3
   image:
@@ -21,4 +20,4 @@ backend:
     port: 8081
     targetPort: 8081
   secrets:
-    dockerConfigSecret: 
+    dockerConfigSecret:

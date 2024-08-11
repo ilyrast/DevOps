@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1       
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}        
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: frontend       
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - image: {{ .Values.deployment.image }}
+          name: frontend
+          imagePullPolicy: {{ .Values.deployment.imagePullPolicy }}
+          volumeMounts:
+            - name: {{ .Values.deployment.volumeMounts.name }}
+              mountPath: {{ .Values.deployment.volumeMounts.mountPath }}
+              subPath: {{ .Values.deployment.volumeMounts.subPath }}
+      imagePullSecrets:
+        - name: {{ .Values.deployment.imagePullSecrets.name }}
+      volumes:
+        - name: {{ .Values.deployment.volumeMounts.name }}
+          configMap:
+            name: {{ .Values.configMap.name }}
+            items:
+              - key: default.conf
+                path: default.conf

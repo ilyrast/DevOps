@@ -9,7 +9,8 @@ stages:
   - build-docker
   - test
   - release
-  - deploy
+  - deploy-dev
+  - deploy-prod
 
 build-frontend-code:
   stage: build-code
@@ -78,7 +79,7 @@ release-front:
 deploy-frontend-dev:
   needs:
     - release-front
-  stage: deploy
+  stage: deploy-dev
   image: docker:24.0.7-alpine3.19
   environment:
     name: production/frontend
@@ -96,3 +97,21 @@ deploy-frontend-dev:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker --context remote compose up frontend -d --pull "always" --force-recreate
 
+deploy-frontend-k8s:
+  needs:
+    - deploy-frontend-dev
+  stage: deploy-prod
+  image: alpine/helm:3.9.3
+  before_script:
+    - mkdir -p ~/.kube
+    - touch ~/.kube/config
+    - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
+    - pwd
+  script:
+    - 'sed -i "5s|: .*|: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-frontend:${VERSION}|" infrastructure/helm/charts/frontend/values.yaml'
+    - 'sed -i "20s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/values.yaml'
+    - helm dependency update ./charts/frontend
+    - cd infrastructure/helm/charts/fontend
+    - helm upgrade --debug --install --atomic momo-store ./
+    - rm ~/.kube/config
+  when: manual
