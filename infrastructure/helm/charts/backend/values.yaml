@@ -1,6 +1,6 @@
 replicas: 3
 image:
-  repository: 
+  repository: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-backend:1.0.1441846
   pullPolicy: IfNotPresent
 strategy:
   rollingUpdate:
@@ -19,4 +19,4 @@ service:
   port: 8081
   targetPort: 8081
 secrets:
-  dockerConfigSecret: 
+  dockerConfigSecret: ewogICAgImF1dGhzIjogewogICAgICAgICJnaXRsYWIucHJha3Rpa3VtLXNlcnZpY2VzLnJ1OjUwNTAiOiB7CiAgICAgICAgICAgICJhdXRoIjogIlltRmphMTlyT0hNNlkwY3RhRmhtUjNCdGVIVlJOVGwxYVZjemMwWT0iCiAgICAgICAgfQogICAgfQp9

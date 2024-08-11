@@ -138,6 +138,6 @@ deploy-backend-k8s:
     - 'sed -i "22s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/backend/values.yaml'
     - helm dependency update infrastructure/helm/charts/backend
     - cd infrastructure/helm/charts/backend
-    - helm upgrade --debug --install --atomic momo-store ./ --values ./values.yaml
+    - helm upgrade --debug --install --atomic momo-store-backend ./ --values ./values.yaml
     - rm ~/.kube/config
   when: manual
