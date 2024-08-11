@@ -1,7 +1,7 @@
 deployment:
   replicas: 1
   revisionHistoryLimit: 12
-  image: null
+  image: 
   imagePullPolicy: IfNotPresent
   volumeMounts:
     name: nginx-conf
@@ -16,7 +16,7 @@ ingress:
   host: momo-k8s-027-04.ru
 secrets:
   data:
-    json: null
+    json: 
     type: kubernetes.io/dockerconfigjson
 service:
   type: ClusterIP
