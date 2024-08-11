@@ -106,13 +106,11 @@ deploy-frontend-k8s:
     - mkdir -p ~/.kube
     - touch ~/.kube/config
     - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
-    - pwd
   script:
     - 'sed -i "4s|: .*|: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-frontend:${VERSION}|" infrastructure/helm/charts/frontend/values.yml'
     - 'sed -i "19s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/frontend/values.yml'
     - helm dependency update infrastructure/helm/charts/frontend
     - cd infrastructure/helm/charts/frontend
-    - cat values.yml
     - helm upgrade --debug --install --atomic momo-store ./ --values ./values.yml
     - rm ~/.kube/config
   when: manual

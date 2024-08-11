@@ -132,7 +132,6 @@ deploy-backend-k8s:
     - mkdir -p ~/.kube
     - touch ~/.kube/config
     - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
-    - pwd
   script:
     - 'sed -i "3s|: .*|: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-backend:${VERSION}|" infrastructure/helm/charts/backend/values.yaml'
     - 'sed -i "22s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/backend/values.yaml'
