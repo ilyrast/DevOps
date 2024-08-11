@@ -135,7 +135,7 @@ deploy-backend-k8s:
     - pwd
   script:
     - 'sed -i "5s|: .*|: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-backend:${VERSION}|" infrastructure/helm/charts/backend/values.yaml'
-    - 'sed -i "24s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/values.yaml'
+    - 'sed -i "24s|: .*|: ${dockerConfigSecret}|" infrastructure/helm/charts/backend/values.yaml'
     - helm dependency update ./charts/backend
     - cd infrastructure/helm/charts/backend
     - helm upgrade --debug --install --atomic momo-store ./
