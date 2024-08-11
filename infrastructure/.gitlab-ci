@@ -1,0 +1,17 @@
+stages:
+  - deploy
+
+deploy-ingress:
+  stage: deploy
+  image: alpine/helm:3.9.3
+  before_script:
+    - mkdir -p ~/.kube
+    - touch ~/.kube/config
+    - echo "${kubeconfig}" | tee ~/.kube/config > /dev/null
+  script:
+    - helm dependency update infrastructure/helm/charts/ingress
+    - cd infrastructure/helm/charts/ingress
+    - helm upgrade --debug --install --atomic momo-store ./ --values ./values.yaml
+    - rm ~/.kube/config
+  when: manual
+
