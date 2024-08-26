@@ -1,0 +1,23 @@
+
+---
+apiVersion: v2
+type: application
+name: momo-store
+description: Momo Store Helm Chart
+
+version: 0.1.0
+appVersion: "latest"
+
+dependencies:
+  - name: backend
+    version: 0.1.0
+    repository: "file://charts/backend"
+  - name: frontend
+    version: 0.1.0 
+    repository: "file://charts/frontend"
+  - name: ingress-nginx
+    version: 4.2.5
+    repository: https://kubernetes.github.io/ingress-nginx
+  - name: ingress
+    version: 0.1.0 
+    repository: "file://charts/ingress"

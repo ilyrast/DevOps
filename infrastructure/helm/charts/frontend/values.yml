@@ -1,0 +1,26 @@
+deployment:
+  replicas: 1
+  revisionHistoryLimit: 12
+  image: gitlab.praktikum-services.ru:5050/std-027-04/store_diplom/momo-frontend:1.0.1441844
+  imagePullPolicy: IfNotPresent
+  volumeMounts:
+    name: nginx-conf
+    mountPath: /etc/nginx/conf.d/default.conf
+    subPath: default.conf
+  imagePullSecrets:
+    name: docker-config-secret
+configMap:
+  name: default-conf
+ingress:
+  ingressClassName: frontend
+  host: momo-k8s-027-04.ru
+secrets:
+  data:
+    json: ewogICAgImF1dGhzIjogewogICAgICAgICJnaXRsYWIucHJha3Rpa3VtLXNlcnZpY2VzLnJ1OjUwNTAiOiB7CiAgICAgICAgICAgICJhdXRoIjogIlltRmphMTlyT0hNNlkwY3RhRmhtUjNCdGVIVlJOVGwxYVZjemMwWT0iCiAgICAgICAgfQogICAgfQp9
+    type: kubernetes.io/dockerconfigjson
+service:
+  type: ClusterIP
+  ports:
+    port: 80
+    protocol: TCP
+    targetPort: 80
